@@ -1,14 +1,7 @@
+import { tasks } from "../data/tasks";
+
 const initialState = {
-  tasks: [
-    {
-      id: 1,
-      title: "Task 1",
-      description: "Description 1",
-      tags: ["tag1"],
-      priority: "high",
-      favorite: false,
-    },
-  ],
+  tasks,
   searchTerm: ""
 };
 

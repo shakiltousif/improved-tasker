@@ -32,7 +32,6 @@ export default function DataTable() {
   const [editDetails, setEditDetails] = useState(false);
 
   const deleteTask = (task) => {
-    dispatch({ type: "DELETE_TASK", payload: task?.id });
     // Display a confirmation prompt
     const isConfirmed = window.confirm(
       `Are you sure you want to delete ${task?.title}?`
@@ -55,6 +54,11 @@ export default function DataTable() {
     setOpenTaskModal(true);
     setEditDetails(task);
   };
+
+  // Filter tasks based on search term
+  const filteredTasks = state.tasks.filter((task) => {
+    return task.title.toLowerCase().includes(state?.searchTerm.toLowerCase());
+  });
 
   return (
     <>
@@ -80,10 +84,10 @@ export default function DataTable() {
           </tr>
         </thead>
         <tbody>
-          {state.tasks?.length != 0
-            ? state.tasks.map((task) => (
+          {filteredTasks?.length != 0
+            ? filteredTasks.map((task) => (
                 <tr
-                  key={task.id}
+                  key={task?.id}
                   className="border-b border-[#2E3443] [&>td]:align-baseline [&>td]:px-4 [&>td]:py-2"
                 >
                   <td>
@@ -108,13 +112,13 @@ export default function DataTable() {
                       </svg>
                     </p>
                   </td>
-                  <td>{task.title}</td>
+                  <td>{task?.title}</td>
                   <td>
-                    <div>{task.description}</div>
+                    <div>{task?.description}</div>
                   </td>
                   <td>
                     <ul className="flex justify-center gap-1.5 flex-wrap">
-                      {task.tags.map((tag, tagKey) => (
+                      {task?.tags.map((tag, tagKey) => (
                         <li key={tagKey}>
                           <span
                             className={`inline-block h-5 whitespace-nowrap rounded-[45px] bg-[#00D991A1] px-2.5 text-sm capitalize text-[#F4F5F6]`}
@@ -126,7 +130,10 @@ export default function DataTable() {
                       ))}
                     </ul>
                   </td>
-                  <td className="text-center">{task.priority}</td>
+                  <td className="text-center">
+                    {task?.priority.charAt(0).toUpperCase() +
+                      task?.priority.slice(1).toLowerCase()}
+                  </td>
                   <td>
                     <div className="flex items-center justify-center space-x-3">
                       <button
@@ -145,10 +152,12 @@ export default function DataTable() {
                   </td>
                 </tr>
               ))
-            : state.tasks?.length == 0 && (
+            : filteredTasks?.length == 0 && (
                 <tr className="border-b border-[#2E3443] [&>td]:align-baseline [&>td]:px-4 [&>td]:py-2">
                   <td colSpan={6} className="text-center">
-                    Task List is empty!
+                    {state?.searchTerm == ""
+                      ? "Task List is empty!"
+                      : "Searched Task was not found!"}
                   </td>
                 </tr>
               )}
